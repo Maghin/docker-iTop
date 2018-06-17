@@ -20,7 +20,7 @@ Then services will be available at following addresses:
 - iTop: (http://localhost:8080)
 - phpMyAdmin: (http://localhost:8000)
 
-> Please ignore the session warning. See docker-library/php#201
+> Please ignore the session warning. See https://github.com/docker-library/php/issues/201
 
 ## Environment variables
 
