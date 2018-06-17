@@ -1,0 +1,52 @@
+version: "2.3"
+
+# Use this file for an example for production
+
+services:
+  mariadb:
+    image: mariadb:10.2.14
+    restart: always
+    stdin_open: true
+    environment:
+      - MYSQL_ROOT_PASSWORD=iop
+      - MYSQL_DATABASE=itop
+      - MYSQL_USER=itop
+      - MYSQL_PASSWORD=itop
+    volumes:
+      - ./volumes/mariadb:/var/lib/mysql
+  itop:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    stdin_open: true
+    environment:
+      - ITOP_DB_HOST=db
+      - ITOP_DB_NAME=itop
+      - ITOP_DB_USER=itop
+      - ITOP_DB_PASS=itop
+      - PHP_TIMEZONE="Europe/Paris"
+      - PHP_ENABLE_UPLOADS="On"
+      - PHP_MEMORY_LIMIT="256M"
+      - PHP_POST_MAX_SIZE="10M"
+      - PHP_UPLOAD_MAX_FILESIZE="8M"
+      - PHP_MAX_FILE_UPLOADS="20"
+      - PHP_MAX_INPUT_TIME="300"
+      - PHP_LOG_ERRORS="On"
+      - PHP_ERROR_REPORTING="E_ALL" # Production Value: E_ALL & ~E_DEPRECATED & ~E_STRICT
+    links:
+      - mariadb:db
+    ports:
+      - "8080:80"
+    volumes:
+      - ./volumes/itop/config:/var/www/html/config
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    stdin_open: true
+    links:
+      - mariadb:db
+    ports:
+      - "8000:80"
+    volumes:
+      - ./volumes/sessions:/sessions
