@@ -43,7 +43,7 @@ else
       echo "\$DB['server'] = '$ITOP_DB_HOST';"
       echo "\$DB['user'] = '$ITOP_DB_USER';"
       echo "\$DB['password'] = '$ITOP_DB_PASS';"
-      echo "\$DB['db'] = '${ITOP_DB_NAME:-phpmyfaq}';"
+      echo "\$DB['db'] = '${ITOP_DB_NAME:-itop}';"
       echo "\$DB['prefix'] = '${ITOP_DB_PREFIX}';"
       echo "\$DB['type'] = '${ITOP_DB_TYPE:-mysqli}';"
     } | tee ./config/database.php
