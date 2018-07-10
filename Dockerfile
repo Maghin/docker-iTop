@@ -28,7 +28,7 @@ RUN set -x \
 
 #=== Install intl php dependencie ===
 RUN set -x \
- && runtimeDeps="libicu52" \
+ && runtimeDeps="libicu57" \
  && buildDeps="libicu-dev" \
  && apt-get update && apt-get install -y ${buildDeps} ${runtimeDeps} --no-install-recommends \
  \
@@ -51,7 +51,7 @@ RUN set -x \
 
 #=== Install zip, soap and opcache php dependencies ===
 RUN set -x \
- && buildDeps="libxml2-dev" \
+ && buildDeps="libxml2-dev zlib1g-dev" \
  && apt-get update && apt-get install -y ${buildDeps} --no-install-recommends \
  \
  && docker-php-ext-install zip \
