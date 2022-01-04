@@ -77,7 +77,7 @@ WORKDIR /var/www/$APP_NAME
 ARG ITOP_VERSION=2.7.5-1
 ARG ITOP_PATCH=7770
 RUN set -x \
- && buildDeps="bsdtar" \
+ && buildDeps="libarchive-tools" \
  && apt-get update && apt-get install -y ${buildDeps} --no-install-recommends \
  \
  && curl -sL https://sourceforge.net/projects/itop/files/itop/$ITOP_VERSION/iTop-$ITOP_VERSION-$ITOP_PATCH.zip \
