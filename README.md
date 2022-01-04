@@ -22,7 +22,7 @@ All volumes are mounted in `./volumes`.
 Then services will be available at following addresses:
 
 - iTop: (http://localhost:8080)
-- phpMyAdmin: (http://localhost:8000)
+- adminer: (http://localhost:8000)
 
 > Please ignore the session warning. See https://github.com/docker-library/php/issues/201
 

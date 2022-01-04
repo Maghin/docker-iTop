@@ -10,7 +10,7 @@ services:
     networks:
       - mynetwork
     ports:
-      - "23306:3306"
+      - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=iop
       - MYSQL_DATABASE=itop
@@ -45,7 +45,7 @@ services:
     links:
       - db
     ports:
-      - "28080:80"
+      - "8080:80"
     volumes:
       - ./volumes/itop/conf:/var/www/itop/conf
       - ./volumes/itop/data:/var/www/itop/data
@@ -62,7 +62,7 @@ services:
     links:
       - db
     ports:
-      - "28000:8080"
+      - "8000:8080"
 
 networks:
   mynetwork:
