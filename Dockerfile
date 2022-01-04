@@ -115,7 +115,7 @@ RUN { \
  && a2enconf security
 
 #=== php default ===
-ENV PHP_TIMEZONE="Europe/Paris" \
+ENV PHP_TIMEZONE="Asia/Dubai" \
     PHP_ENABLE_UPLOADS=On \
     PHP_MEMORY_LIMIT=64M \
     PHP_POST_MAX_SIZE=10M \
