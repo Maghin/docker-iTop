@@ -1,7 +1,7 @@
 ##################################
 #=== Single stage with payload ===
 ##################################
-FROM php:7.1-apache
+FROM php:7.4-apache-buster
 
 #=== Install gd php dependencie ===
 RUN set -x \
@@ -9,8 +9,8 @@ RUN set -x \
  && buildDeps="libpng-dev libjpeg-dev libfreetype6-dev" \
  && apt-get update && apt-get install -y ${buildDeps} ${runtimeDeps} --no-install-recommends \
  \
- && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
- && docker-php-ext-install gd \
+ && docker-php-ext-configure gd --with-freetype --with-jpeg \
+ && docker-php-ext-install -j$(nproc) gd \
  \
  && apt-get autoremove -y ${buildDeps} \
  && rm -rf /var/lib/apt/lists/*
@@ -28,35 +28,12 @@ RUN set -x \
 
 #=== Install intl php dependencie ===
 RUN set -x \
- && runtimeDeps="libicu57" \
+ && runtimeDeps="libicu63" \
  && buildDeps="libicu-dev" \
  && apt-get update && apt-get install -y ${buildDeps} ${runtimeDeps} --no-install-recommends \
  \
  && docker-php-ext-configure intl \
  && docker-php-ext-install intl \
- \
- && apt-get autoremove -y ${buildDeps} \
- && rm -rf /var/lib/apt/lists/*
-
-#=== Install mcrypt php dependencie ===
-RUN set -x \
- && runtimeDeps="libmcrypt4" \
- && buildDeps="libmcrypt-dev" \
- && apt-get update && apt-get install -y ${runtimeDeps} ${buildDeps} --no-install-recommends \
- \
- && docker-php-ext-install mcrypt \
- \
- && apt-get autoremove -y ${buildDeps} \
- && rm -rf /var/lib/apt/lists/*
-
-#=== Install zip, soap and opcache php dependencies ===
-RUN set -x \
- && buildDeps="libxml2-dev zlib1g-dev" \
- && apt-get update && apt-get install -y ${buildDeps} --no-install-recommends \
- \
- && docker-php-ext-install zip \
- && docker-php-ext-install soap \
- && docker-php-ext-install opcache \
  \
  && apt-get autoremove -y ${buildDeps} \
  && rm -rf /var/lib/apt/lists/*
@@ -70,13 +47,35 @@ RUN set -x \
  && apt-get update && apt-get install -y graphviz --no-install-recommends \
  && rm -rf /var/lib/apt/lists/*
 
+#=== Install soap and opcache php dependencies ===
+RUN set -x \
+ && runtimeDeps="" \
+ && buildDeps="libxml2-dev" \
+ && apt-get update && apt-get install -y ${buildDeps} ${runtimeDeps} --no-install-recommends \
+ \
+ && docker-php-ext-install soap \
+ && docker-php-ext-install opcache \
+ \
+ && apt-get autoremove -y ${buildDeps} \
+ && rm -rf /var/lib/apt/lists/*
+
+#=== Install zip php dependencie ===
+RUN set -x \
+ && runtimeDeps="libzip-dev zlib1g-dev" \
+ && apt-get update && apt-get install -y ${runtimeDeps} --no-install-recommends \
+ \
+ && docker-php-ext-configure zip \
+ && docker-php-ext-install zip \
+ \
+ && rm -rf /var/lib/apt/lists/*
+
 #=== Set app folder ===
 ARG APP_NAME="itop"
 WORKDIR /var/www/$APP_NAME
 
 #=== Add iTop source code ===
-ARG ITOP_VERSION=2.4.1
-ARG ITOP_PATCH=3714
+ARG ITOP_VERSION=2.7.4
+ARG ITOP_PATCH=7194
 RUN set -x \
  && buildDeps="bsdtar" \
  && apt-get update && apt-get install -y ${buildDeps} --no-install-recommends \
@@ -127,9 +126,10 @@ ENV PHP_TIMEZONE="Europe/Paris" \
     PHP_ERROR_REPORTING=E_ALL
 
 #=== Set custom entrypoint ===
-COPY docker-entrypoint.sh /entrypoint
-RUN chmod +x /entrypoint
-ENTRYPOINT [ "/entrypoint" ]
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint
+RUN chmod +x /usr/local/bin/docker-entrypoint
+ENTRYPOINT [ "docker-entrypoint" ]
 
 #=== Re-Set CMD as we changed the default entrypoint ===
 CMD [ "apache2-foreground" ]
+

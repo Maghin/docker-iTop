@@ -1,12 +1,16 @@
-version: "2.3"
+version: "3"
 
 # Use this file for an example for production
 
 services:
-  mariadb:
-    image: mariadb:10.2.14
-    restart: always
+  db:
+    image: mariadb:10.4
+    restart: unless-stopped 
     stdin_open: true
+    networks:
+      - mynetwork
+    ports:
+      - "23306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=iop
       - MYSQL_DATABASE=itop
@@ -14,12 +18,16 @@ services:
       - MYSQL_PASSWORD=itop
     volumes:
       - ./volumes/mariadb:/var/lib/mysql
+      - ./initdb:/docker-entrypoint-initdb.d
   itop:
     build:
       context: .
       dockerfile: Dockerfile
-    restart: always
+#    image: vbkunin/itop:2.7.4-base
+    restart: unless-stopped
     stdin_open: true
+    networks:
+      - mynetwork
     environment:
       - ITOP_DB_HOST=db
       - ITOP_DB_NAME=itop
@@ -35,18 +43,28 @@ services:
       - PHP_LOG_ERRORS="On"
       - PHP_ERROR_REPORTING="E_ALL" # Production Value: E_ALL & ~E_DEPRECATED & ~E_STRICT
     links:
-      - mariadb:db
+      - db
     ports:
-      - "8080:80"
+      - "28080:80"
     volumes:
-      - ./volumes/itop/config:/var/www/html/config
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    restart: always
+      - ./volumes/itop/conf:/var/www/itop/conf
+      - ./volumes/itop/data:/var/www/itop/data
+      - ./volumes/itop/log:/var/www/itop/log
+      - ./volumes/itop/env-production:/var/www/itop/env-production
+      - ./volumes/itop/env-production-build:/var/www/itop/env-production-build
+      - ./extensions:/var/www/itop/extensions
+  adminer:
+    image: adminer
+    restart: unless-stopped
     stdin_open: true
+    networks:
+      - mynetwork
     links:
-      - mariadb:db
+      - db
     ports:
-      - "8000:80"
-    volumes:
-      - ./volumes/sessions:/sessions
+      - "28000:8080"
+
+networks:
+  mynetwork:
+    driver: bridge
+

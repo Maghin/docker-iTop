@@ -1,7 +1,9 @@
-#! /bin/sh
+#!/bin/sh
 
 # Exit on error
 set -e
+
+echo "Starting iTop..."
 
 #=== Set shared folder permissions ===
 folders="conf data log env-production env-production-build"
@@ -78,3 +80,4 @@ fi
 } | tee $PHP_INI_DIR/conf.d/opcache-recommended.ini
 
 docker-php-entrypoint "$@"
+

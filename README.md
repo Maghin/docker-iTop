@@ -1,8 +1,10 @@
 # iTop on Docker
 
+This repo provides a quick way to start a demo environnement for iTop 2.7 LTS. The Dockerfile is also suitable for production usage.
+
 ## How to Use
 
-Use docker compose:
+Clone the repo and use docker compose:
 
     docker-compose up
 
@@ -10,10 +12,12 @@ The command above starts 3 containers as following:
 
 _Running using local volumes:_
 - **mariadb**: database with xtrabackup support
-- **phpmyadmin**: a PHP tool to have a look on your database.
+- **adminer**: a PHP tool to have a look on your database.
 
 _Running apache web server with PHP support:_
-- **itop**: mounts the ressources folders in `./volumes`.
+- **itop**: version 2.7 LTS
+
+All volumes are mounted in `./volumes`.
 
 Then services will be available at following addresses:
 
@@ -50,3 +54,4 @@ MIT
 ## Author
 
 MerhylStudio <shk@merhylstudio.fr>
+
