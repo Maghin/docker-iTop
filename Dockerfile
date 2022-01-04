@@ -1,7 +1,7 @@
 ##################################
 #=== Single stage with payload ===
 ##################################
-FROM php:7.4-apache-buster
+FROM php:7.4-apache
 
 #=== Install gd php dependencie ===
 RUN set -x \
@@ -28,7 +28,7 @@ RUN set -x \
 
 #=== Install intl php dependencie ===
 RUN set -x \
- && runtimeDeps="libicu63" \
+ && runtimeDeps="libicu67" \
  && buildDeps="libicu-dev" \
  && apt-get update && apt-get install -y ${buildDeps} ${runtimeDeps} --no-install-recommends \
  \
@@ -74,8 +74,8 @@ ARG APP_NAME="itop"
 WORKDIR /var/www/$APP_NAME
 
 #=== Add iTop source code ===
-ARG ITOP_VERSION=2.7.4
-ARG ITOP_PATCH=7194
+ARG ITOP_VERSION=2.7.5-1
+ARG ITOP_PATCH=7770
 RUN set -x \
  && buildDeps="bsdtar" \
  && apt-get update && apt-get install -y ${buildDeps} --no-install-recommends \
