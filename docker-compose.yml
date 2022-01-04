@@ -33,7 +33,7 @@ services:
       - ITOP_DB_NAME=itop
       - ITOP_DB_USER=itop
       - ITOP_DB_PASS=itop
-      - PHP_TIMEZONE="Asia/Dubai"
+      - PHP_TIMEZONE="Europe/Paris"
       - PHP_ENABLE_UPLOADS="On"
       - PHP_MEMORY_LIMIT="256M"
       - PHP_POST_MAX_SIZE="10M"
