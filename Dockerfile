@@ -3,6 +3,16 @@
 ##################################
 FROM php:7.4-apache
 
+ARG PHP_TIMEZONE
+ARG PHP_ENABLE_UPLOADS
+ARG PHP_MEMORY_LIMIT
+ARG PHP_POST_MAX_SIZE
+ARG PHP_UPLOAD_MAX_FILESIZE
+ARG PHP_MAX_FILE_UPLOADS
+ARG PHP_MAX_INPUT_TIME
+ARG PHP_LOG_ERRORS
+ARG PHP_ERROR_REPORTING
+
 #=== Install gd php dependencie ===
 RUN set -x \
  && runtimeDeps="libfreetype6 libjpeg62-turbo" \
@@ -74,8 +84,8 @@ ARG APP_NAME="itop"
 WORKDIR /var/www/$APP_NAME
 
 #=== Add iTop source code ===
-ARG ITOP_VERSION=2.7.5-1
-ARG ITOP_PATCH=7770
+ARG ITOP_VERSION=2.7.6
+ARG ITOP_PATCH=8526
 RUN set -x \
  && buildDeps="libarchive-tools" \
  && apt-get update && apt-get install -y ${buildDeps} --no-install-recommends \
@@ -115,15 +125,15 @@ RUN { \
  && a2enconf security
 
 #=== php default ===
-ENV PHP_TIMEZONE="Europe/Paris" \
-    PHP_ENABLE_UPLOADS=On \
-    PHP_MEMORY_LIMIT=64M \
-    PHP_POST_MAX_SIZE=10M \
-    PHP_UPLOAD_MAX_FILESIZE=8M \
-    PHP_MAX_FILE_UPLOADS=20 \
-    PHP_MAX_INPUT_TIME=300 \
-    PHP_LOG_ERRORS=On \
-    PHP_ERROR_REPORTING=E_ALL
+ENV PHP_TIMEZONE=${PHP_TIMEZONE} \
+    PHP_ENABLE_UPLOADS=${PHP_ENABLE_UPLOADS} \
+    PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT} \
+    PHP_POST_MAX_SIZE=${PHP_POST_MAX_SIZE} \
+    PHP_UPLOAD_MAX_FILESIZE=${PHP_UPLOAD_MAX_FILESIZE} \
+    PHP_MAX_FILE_UPLOADS=${PHP_MAX_FILE_UPLOADS} \
+    PHP_MAX_INPUT_TIME=${PHP_MAX_INPUT_TIME} \
+    PHP_LOG_ERRORS=${PHP_LOG_ERRORS} \
+    PHP_ERROR_REPORTING=${PHP_ERROR_REPORTING}
 
 #=== Set custom entrypoint ===
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint

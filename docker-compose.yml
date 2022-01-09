@@ -1,4 +1,4 @@
-version: "3"
+version: "3.9"
 
 # Use this file for an example for production
 
@@ -12,36 +12,50 @@ services:
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=iop
-      - MYSQL_DATABASE=itop
-      - MYSQL_USER=itop
-      - MYSQL_PASSWORD=itop
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${ITOP_DB_NAME}
+      - MYSQL_USER=${ITOP_DB_USER}
+      - MYSQL_PASSWORD=${ITOP_DB_PASS}
     volumes:
       - ./volumes/mariadb:/var/lib/mysql
       - ./initdb:/docker-entrypoint-initdb.d
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
   itop:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+      - PHP_TIMEZONE=${PHP_TIMEZONE}
+      - PHP_ENABLE_UPLOADS=${PHP_ENABLE_UPLOADS}
+      - PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT}
+      - PHP_POST_MAX_SIZE=${PHP_POST_MAX_SIZE}
+      - PHP_UPLOAD_MAX_FILESIZE=${PHP_UPLOAD_MAX_FILESIZE}
+      - PHP_MAX_FILE_UPLOADS=${PHP_MAX_FILE_UPLOADS}
+      - PHP_MAX_INPUT_TIME=${PHP_MAX_INPUT_TIME}
+      - PHP_LOG_ERRORS=${PHP_LOG_ERRORS}
+      - PHP_ERROR_REPORTING=${PHP_ERROR_REPORTING}
+
 #    image: vbkunin/itop:2.7.4-base
     restart: unless-stopped
     stdin_open: true
     networks:
       - mynetwork
     environment:
-      - ITOP_DB_HOST=db
-      - ITOP_DB_NAME=itop
-      - ITOP_DB_USER=itop
-      - ITOP_DB_PASS=itop
-      - PHP_TIMEZONE="Europe/Paris"
-      - PHP_ENABLE_UPLOADS="On"
-      - PHP_MEMORY_LIMIT="256M"
-      - PHP_POST_MAX_SIZE="10M"
-      - PHP_UPLOAD_MAX_FILESIZE="8M"
-      - PHP_MAX_FILE_UPLOADS="20"
-      - PHP_MAX_INPUT_TIME="300"
-      - PHP_LOG_ERRORS="On"
-      - PHP_ERROR_REPORTING="E_ALL" # Production Value: E_ALL & ~E_DEPRECATED & ~E_STRICT
+      - ITOP_DB_HOST=${ITOP_DB_HOST}
+      - ITOP_DB_NAME=${ITOP_DB_NAME}
+      - ITOP_DB_USER=${ITOP_DB_USER}
+      - ITOP_DB_PASS=${ITOP_DB_PASS}
+      - PHP_TIMEZONE=${PHP_TIMEZONE}
+      - PHP_ENABLE_UPLOADS=${PHP_ENABLE_UPLOADS}
+      - PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT}
+      - PHP_POST_MAX_SIZE=${PHP_POST_MAX_SIZE}
+      - PHP_UPLOAD_MAX_FILESIZE=${PHP_UPLOAD_MAX_FILESIZE}
+      - PHP_MAX_FILE_UPLOADS=${PHP_MAX_FILE_UPLOADS}
+      - PHP_MAX_INPUT_TIME=${PHP_MAX_INPUT_TIME}
+      - PHP_LOG_ERRORS=${PHP_LOG_ERRORS}
+      - PHP_ERROR_REPORTING=${PHP_ERROR_REPORTING}
     links:
       - db
     ports:
@@ -53,6 +67,8 @@ services:
       - ./volumes/itop/env-production:/var/www/itop/env-production
       - ./volumes/itop/env-production-build:/var/www/itop/env-production-build
       - ./extensions:/var/www/itop/extensions
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
   adminer:
     image: adminer
     restart: unless-stopped
